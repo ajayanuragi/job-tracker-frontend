@@ -74,7 +74,7 @@ function JobsPage() {
   }
   return (
     <main className="space-y-6 p-6">
-      <div className="flex items-center justify-between">
+      <div className="space-y-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Jobs</h1>
           <p className="text-muted-foreground">
