@@ -1,11 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { getJobs } from "@/services/jobService";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createJob, getJobs } from "@/services/jobService";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import JobForm from "@/components/jobs/JobForm";
+import type { JobFormValues } from "@/schemas/jobSchema";
+import { useState } from "react";
 
 function JobsPage() {
+  const [isAddJobOpen, setIsAddJobOpen] = useState(false);
+
+  const queryClient = useQueryClient();
+
+  const createJobMutation = useMutation({
+    mutationFn: (data: JobFormValues) => createJob(data),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["jobs"] });
+      setIsAddJobOpen(false);
+    },
+    onError: (error) => {
+      console.error("Failed to create job:", error);
+    },
+  });
+
   const { data, isPending, isError } = useQuery({
     queryKey: ["jobs", 0, 10],
     queryFn: () => getJobs({ page: 0, size: 10 }),
@@ -54,6 +81,23 @@ function JobsPage() {
             Manage and organize your saved job listings.
           </p>
         </div>
+
+        <Dialog open={isAddJobOpen} onOpenChange={setIsAddJobOpen}>
+          <DialogTrigger render={<Button>Add Job</Button>} />
+          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>Add a new job</DialogTitle>
+              <DialogDescription>
+                Enter the details of the job you want to track.
+              </DialogDescription>
+            </DialogHeader>
+
+            <JobForm
+              onSubmit={(data) => createJobMutation.mutate(data)}
+              isPending={createJobMutation.isPending}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
 
       {data.content.length === 0 ? (
