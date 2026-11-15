@@ -5,7 +5,8 @@ import GuestRoute from "@/components/GuestRoute";
 import LoginPage from "@/pages/LoginPage";
 import RegisterPage from "@/pages/RegisterPage";
 import LogoutButton from "@/components/LogoutButton";
-import JobsPage from '@/pages/JobsPage'
+import JobsPage from "@/pages/JobsPage";
+import ApplicationsPage from "@/pages/ApplicationsPage";
 function App() {
   return (
     <Routes>
@@ -16,6 +17,7 @@ function App() {
       </Route>
       <Route element={<ProtectedRoute />}>
         <Route path="/jobs" element={<JobsPage />} />
+        <Route path="/applications" element={<ApplicationsPage />} />
         <Route
           path="/dashboard"
           element={
