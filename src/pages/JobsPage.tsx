@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { Link } from "react-router";
 import {
   Dialog,
   DialogTrigger,
@@ -135,6 +136,13 @@ function JobsPage() {
                 <p className="mt-auto text-sm text-muted-foreground">
                   {job.location || "Location not specified"}
                 </p>
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  render={<Link to={`/jobs/${job.id}`} />}
+                >
+                  View Details
+                </Button>
               </CardContent>
             </Card>
           ))}
