@@ -3,6 +3,7 @@ import type {
   Application,
   ApplicationRequest,
   ApplicationPatchRequest,
+  ApplicationStatus
 } from "@/types/application";
 import type { Page } from "@/types/pagination";
 
@@ -51,3 +52,14 @@ export const applicationExists = async (jobId: number): Promise<boolean> => {
 
   return response.data
 }
+
+export const updateApplicationStatus = async (
+  id: number,
+  status: ApplicationStatus
+): Promise<Application> => {
+  const response = await api.patch<Application>(
+    `/api/applications/${id}`,
+    { status }
+  );
+  return response.data;
+};
