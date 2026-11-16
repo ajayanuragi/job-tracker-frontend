@@ -1,33 +1,14 @@
 import type { Application } from "@/types/application";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { updateApplicationStatus } from '@/services/applicationService'
-import type { ApplicationStatus } from '@/types/application'
-
+import ApplicationStatusSelect from "@/components/applications/ApplicationStatusSelect";
+import { Link } from "react-router";
+import { Button } from "@/components/ui/button";
 
 interface ApplicationCardProps {
   application: Application;
 }
 
 function ApplicationCard({ application }: ApplicationCardProps) {
-  
-  const queryClient = useQueryClient()
-  
-  const statusMutation = useMutation({
-    mutationFn: (status: ApplicationStatus) =>
-      updateApplicationStatus(application.id, status),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['applications'] })
-    },
-  })
-
   return (
     <Card>
       <CardHeader>
@@ -39,23 +20,7 @@ function ApplicationCard({ application }: ApplicationCardProps) {
             </p>
           </div>
 
-          <Select
-            value={application.status}
-            onValueChange={(value) => {
-              statusMutation.mutate(value as ApplicationStatus)
-            }}
-          >
-            <SelectTrigger className="w-40">
-            <SelectValue placeholder="Select status" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="APPLIED">Applied</SelectItem>
-              <SelectItem value="INTERVIEW">Interview</SelectItem>
-              <SelectItem value="OFFER">Offer</SelectItem>
-              <SelectItem value="REJECTED">Rejected</SelectItem>
-              <SelectItem value="WITHDRAW">Withdrawn</SelectItem>
-            </SelectContent>
-          </Select>
+          <ApplicationStatusSelect application={application} />
         </div>
       </CardHeader>
 
@@ -65,6 +30,14 @@ function ApplicationCard({ application }: ApplicationCardProps) {
         </p>
 
         {application.notes && <p className="text-sm">{application.notes}</p>}
+
+        <Button
+          variant="outline"
+          className="w-full mt-2"
+          render={<Link to={`/applications/${application.id}`} />}
+        >
+          View Details
+        </Button>
       </CardContent>
     </Card>
   );

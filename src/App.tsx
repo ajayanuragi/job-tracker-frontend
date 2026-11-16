@@ -8,6 +8,7 @@ import LogoutButton from "@/components/LogoutButton";
 import JobsPage from "@/pages/JobsPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import JobDetailsPage from "@/pages/JobDetailsPage";
+import ApplicationDetailsPage from "@/pages/ApplicationDetailsPage";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/jobs" element={<JobsPage />} />
         <Route path="/jobs/:id" element={<JobDetailsPage />} />
         <Route path="/applications" element={<ApplicationsPage />} />
+        <Route path="/applications/:id" element={<ApplicationDetailsPage />} />
         <Route
           path="/dashboard"
           element={
