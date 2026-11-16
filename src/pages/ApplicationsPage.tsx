@@ -22,11 +22,12 @@ import ApplicationCard from "@/components/applications/ApplicationCard";
 import ApplicationForm from "@/components/applications/ApplicationForm";
 import type { ApplicationFormValues } from "@/schemas/applicationSchema";
 import { useState } from "react";
+import PageError from "@/components/common/PageError";
 
 function ApplicationsPage() {
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
 
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["applications"],
     queryFn: () =>
       getApplications({
@@ -95,21 +96,17 @@ function ApplicationsPage() {
     return (
       <main className="space-y-6 p-6">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">
-            Applications
-          </h1>
+          <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
           <p className="text-muted-foreground">
             Track and manage your job applications.
           </p>
         </div>
-  
-        <Alert variant="destructive">
-          <AlertTitle>Unable to load applications</AlertTitle>
-          <AlertDescription>
-            Something went wrong while fetching your applications.
-            Please try again.
-          </AlertDescription>
-        </Alert>
+
+        <PageError
+          title="Unable to load applications"
+          message="Something went wrong while fetching your applications. Please try again."
+          onRetry={() => refetch()}
+        />
       </main>
     );
   }
