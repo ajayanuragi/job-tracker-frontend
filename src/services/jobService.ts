@@ -13,6 +13,11 @@ export const getJobs = async (params: JobParams): Promise<Page<Job>> => {
   return response.data;
 };
 
+export const getJob = async (id: number): Promise<Job> => {
+  const response = await api.get<Job>(`/api/jobs/${id}`);
+  return response.data;
+};
+
 export const createJob = async (data: JobRequest): Promise<Job> => {
   const response = await api.post<Job>("/api/jobs", data);
   return response.data;
@@ -32,5 +37,5 @@ export const patchJob = async (
 };
 
 export const deleteJob = async (id: number): Promise<void> => {
-  await api.delete(`/api/jobs/${id}`)
-}
+  await api.delete(`/api/jobs/${id}`);
+};
