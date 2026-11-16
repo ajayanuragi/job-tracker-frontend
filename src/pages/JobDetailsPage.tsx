@@ -3,7 +3,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getJob } from "@/services/jobService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
@@ -23,6 +22,7 @@ import {
   applicationExists,
 } from "@/services/applicationService";
 import PageError from "@/components/common/PageError";
+import DetailsPageSkeleton from "@/components/common/DetailsPageSkeleton";
 
 function JobDetails() {
   const [isTrackApplicationOpen, setIsTrackApplicationOpen] = useState(false);
@@ -68,13 +68,7 @@ function JobDetails() {
     );
   }
   if (isPending) {
-    return (
-      <main className="space-y-4 p-6">
-        <Skeleton className="h-8 w-64" />
-        <Skeleton className="h-5 w-40" />
-        <Skeleton className="h-48 w-full" />
-      </main>
-    );
+    return <DetailsPageSkeleton />;
   }
 
   if (isError || !job) {
