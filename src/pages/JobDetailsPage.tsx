@@ -22,6 +22,7 @@ import {
   createApplication,
   applicationExists,
 } from "@/services/applicationService";
+import PageError from "@/components/common/PageError";
 
 function JobDetails() {
   const [isTrackApplicationOpen, setIsTrackApplicationOpen] = useState(false);
@@ -31,6 +32,7 @@ function JobDetails() {
     data: job,
     isPending,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ["jobs", Number(id)],
     queryFn: () => getJob(Number(id)),
@@ -38,10 +40,10 @@ function JobDetails() {
   });
 
   const { data: isAlreadyTracked } = useQuery({
-    queryKey: ['applications', 'exists', id],
+    queryKey: ["applications", "exists", id],
     queryFn: () => applicationExists(Number(id)),
     enabled: !!id && Number.isInteger(Number(id)) && Number(id) > 0,
-  })
+  });
 
   const queryClient = useQueryClient();
 
@@ -78,16 +80,15 @@ function JobDetails() {
   if (isError || !job) {
     return (
       <main className="space-y-4 p-6">
-        <Alert variant="destructive">
-          <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>
-            Failed to load job details. Please try again later.
-          </AlertDescription>
-        </Alert>
-
         <Button variant="outline" render={<Link to="/jobs" />}>
           Back to Jobs
         </Button>
+
+        <PageError
+          title="Unable to load job"
+          message="Something went wrong while fetching job details. Please try again."
+          onRetry={() => refetch()}
+        />
       </main>
     );
   }
@@ -105,7 +106,9 @@ function JobDetails() {
         >
           <DialogTrigger
             render={
-              <Button disabled={isAlreadyTracked === undefined || isAlreadyTracked}>
+              <Button
+                disabled={isAlreadyTracked === undefined || isAlreadyTracked}
+              >
                 {isAlreadyTracked ? "Already Tracked" : "Track Application"}
               </Button>
             }

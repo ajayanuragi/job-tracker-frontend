@@ -3,7 +3,6 @@ import { createJob, getJobs } from "@/services/jobService";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "react-router";
 import {
@@ -17,6 +16,7 @@ import {
 import JobForm from "@/components/jobs/JobForm";
 import type { JobFormValues } from "@/schemas/jobSchema";
 import { useState } from "react";
+import PageError from "@/components/common/PageError";
 
 function JobsPage() {
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
@@ -34,7 +34,7 @@ function JobsPage() {
     },
   });
 
-  const { data, isPending, isError } = useQuery({
+  const { data, isPending, isError, refetch } = useQuery({
     queryKey: ["jobs", 0, 10],
     queryFn: () => getJobs({ page: 0, size: 10 }),
   });
@@ -63,16 +63,23 @@ function JobsPage() {
 
   if (isError) {
     return (
-      <main className="p-6">
-        <Alert variant="destructive">
-          <AlertTitle>Something went wrong</AlertTitle>
-          <AlertDescription>
-            Failed to load jobs. Please try again later.
-          </AlertDescription>
-        </Alert>
+      <main className="space-y-6 p-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Jobs</h1>
+          <p className="text-muted-foreground">
+            Manage and organize your saved job listings.
+          </p>
+        </div>
+
+        <PageError
+          title="Unable to load jobs"
+          message="Something went wrong while fetching jobs. Please try again."
+          onRetry={() => refetch()}
+        />
       </main>
     );
   }
+
   return (
     <main className="space-y-6 p-6">
       <div className="space-y-4">

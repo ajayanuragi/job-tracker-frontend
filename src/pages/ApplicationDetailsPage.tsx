@@ -10,13 +10,13 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import ApplicationStatusSelect from "@/components/applications/ApplicationStatusSelect";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   getApplication,
   patchApplication,
 } from "@/services/applicationService";
+import PageError from "@/components/common/PageError";
 
 function ApplicationDetailsPage() {
   const [editedNotes, setEditedNotes] = useState<string | null>(null);
@@ -27,6 +27,7 @@ function ApplicationDetailsPage() {
     data: application,
     isPending,
     isError,
+    refetch,
   } = useQuery({
     queryKey: ["applications", applicationId],
     queryFn: () => getApplication(applicationId),
@@ -59,41 +60,45 @@ function ApplicationDetailsPage() {
           <Skeleton className="h-9 w-44" />
           <Skeleton className="h-9 w-40" />
         </div>
-  
+
         <Card>
           <CardHeader className="items-center space-y-3">
             <Skeleton className="h-7 w-64" />
             <Skeleton className="h-4 w-40" />
           </CardHeader>
-  
+
           <CardContent className="space-y-6">
             <div className="flex flex-col items-center gap-2">
               <Skeleton className="h-4 w-24" />
               <Skeleton className="h-4 w-32" />
             </div>
-  
+
             <div className="space-y-2">
               <Skeleton className="h-4 w-16" />
               <Skeleton className="h-28 w-full" />
             </div>
-  
+
             <div className="flex justify-center">
               <Skeleton className="h-9 w-28" />
             </div>
           </CardContent>
         </Card>
       </main>
-    )
+    );
   }
 
   if (isError || !application) {
     return (
-      <main className="p-6">
-        <Alert variant="destructive">
-          <AlertDescription>
-            Failed to load application details.
-          </AlertDescription>
-        </Alert>
+      <main className="space-y-4 p-6">
+        <Button variant="outline" render={<Link to="/applications" />}>
+          Back to Applications
+        </Button>
+
+        <PageError
+          title="Unable to load application"
+          message="Something went wrong while fetching application details. Please try again."
+          onRetry={() => refetch()}
+        />
       </main>
     );
   }
