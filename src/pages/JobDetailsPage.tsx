@@ -1,4 +1,5 @@
 import { useParams } from "react-router";
+import axios from "axios";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getJob } from "@/services/jobService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -19,7 +20,7 @@ import {
 import { useState } from "react";
 import {
   createApplication,
-  applicationExists,
+  getApplicationByJobId,
 } from "@/services/applicationService";
 import PageError from "@/components/common/PageError";
 import DetailsPageSkeleton from "@/components/common/DetailsPageSkeleton";
@@ -39,13 +40,26 @@ function JobDetails() {
     enabled: !!id && !isNaN(Number(id)),
   });
 
-  const { data: isAlreadyTracked } = useQuery({
-    queryKey: ["applications", "exists", id],
-    queryFn: () => applicationExists(Number(id)),
+  const {
+    data: trackedApplication,
+    isPending: isCheckingApplication,
+    isError: isApplicationLookupError,
+    error: applicationLookupError,
+  } = useQuery({
+    queryKey: ["applications", "by-job", Number(id)],
+    queryFn: () => getApplicationByJobId(Number(id)),
     enabled: !!id && Number.isInteger(Number(id)) && Number(id) > 0,
+    retry: false,
   });
 
   const queryClient = useQueryClient();
+
+  const isApplicationNotFound =
+    axios.isAxiosError(applicationLookupError) &&
+    applicationLookupError.response?.status === 404;
+
+  const hasApplicationLookupError =
+    isApplicationLookupError && !isApplicationNotFound;
 
   const createApplicationMutation = useMutation({
     mutationFn: createApplication,
@@ -94,36 +108,43 @@ function JobDetails() {
           Back to Jobs
         </Button>
 
-        <Dialog
-          open={isTrackApplicationOpen}
-          onOpenChange={setIsTrackApplicationOpen}
-        >
-          <DialogTrigger
-            render={
-              <Button
-                disabled={isAlreadyTracked === undefined || isAlreadyTracked}
-              >
-                {isAlreadyTracked ? "Already Tracked" : "Track Application"}
-              </Button>
-            }
-          />
+        {isCheckingApplication || hasApplicationLookupError ? (
+          <Button disabled>
+            {hasApplicationLookupError
+              ? "Unable to check application"
+              : "Checking..."}
+          </Button>
+        ) : trackedApplication ? (
+          <Button
+            variant="outline"
+            render={<Link to={`/applications/${trackedApplication.id}`} />}
+          >
+            View Application
+          </Button>
+        ) : (
+          <Dialog
+            open={isTrackApplicationOpen}
+            onOpenChange={setIsTrackApplicationOpen}
+          >
+            <DialogTrigger render={<Button />}>Track Application</DialogTrigger>
 
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Track Application</DialogTitle>
-              <DialogDescription>
-                Record your application for {job.title}.
-              </DialogDescription>
-            </DialogHeader>
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Track Application</DialogTitle>
+                <DialogDescription>
+                  Record your application for {job.title}.
+                </DialogDescription>
+              </DialogHeader>
 
-            <ApplicationForm
-              jobs={[job]}
-              defaultJobId={job.id}
-              onSubmit={(values) => createApplicationMutation.mutate(values)}
-              isPending={createApplicationMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
+              <ApplicationForm
+                jobs={[job]}
+                defaultJobId={job.id}
+                onSubmit={(values) => createApplicationMutation.mutate(values)}
+                isPending={createApplicationMutation.isPending}
+              />
+            </DialogContent>
+          </Dialog>
+        )}
       </div>
 
       <Card>
