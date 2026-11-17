@@ -11,7 +11,7 @@ export interface ApplicationParams {
   page?: number;
   size?: number;
   sort?: string[];
-  status?: string;
+  status?: ApplicationStatus;
   companyName?: string;
   jobTitle?: string;
 }
