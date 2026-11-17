@@ -4,6 +4,12 @@ import { getApplications } from "@/services/applicationService";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
+import {
+  BriefcaseBusiness,
+  FileText,
+  CalendarCheck,
+  Trophy,
+} from "lucide-react";
 
 export default function DashboardPage() {
   const results = useQueries({
@@ -40,36 +46,61 @@ export default function DashboardPage() {
 
   const [jobsQuery, applicationsQuery, interviewsQuery, offersQuery] = results;
   const stats = [
-    { title: "Total Jobs", query: jobsQuery },
-    { title: "Total Applications", query: applicationsQuery },
-    { title: "Interviews", query: interviewsQuery },
-    { title: "Offers", query: offersQuery },
+    {
+      title: "Total Jobs",
+      query: jobsQuery,
+      icon: BriefcaseBusiness,
+      href: "/jobs",
+    },
+    {
+      title: "Total Applications",
+      query: applicationsQuery,
+      icon: FileText,
+      href: "/applications",
+    },
+    {
+      title: "Interviews",
+      query: interviewsQuery,
+      icon: CalendarCheck,
+      href: "/applications?status=INTERVIEW",
+    },
+    {
+      title: "Offers",
+      query: offersQuery,
+      icon: Trophy,
+      href: "/applications?status=OFFER",
+    },
   ];
 
   return (
     <div className="space-y-6 p-6">
-      <div>
+      <div className="space-y-4">
         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
           Overview of your jobs and applications.
         </p>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map(({ title, query }) => (
-            <Card key={title}>
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">{title}</CardTitle>
-              </CardHeader>
-
-              <CardContent>
-                <div className="text-3xl font-bold">
-                  {query.isPending
-                    ? "..."
-                    : query.isError
-                      ? "Error"
-                      : query.data.page.totalElements}
-                </div>
-              </CardContent>
-            </Card>
+          {stats.map(({ title, query, icon: Icon, href }) => (
+            <Link key={title} to={href} className="block">
+              <Card className="h-full transition-colors hover:bg-muted/50">
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <CardTitle className="text-sm font-medium">
+                    {title}
+                  </CardTitle>
+                  <Icon className="size-5 text-muted-foreground" />
+                </CardHeader>
+          
+                <CardContent>
+                  <div className="text-3xl font-bold">
+                    {query.isPending
+                      ? "..."
+                      : query.isError
+                        ? "Error"
+                        : query.data.page.totalElements}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
           ))}
         </div>
       </div>
@@ -78,7 +109,7 @@ export default function DashboardPage() {
         <CardHeader>
           <CardTitle>Recent Applications</CardTitle>
         </CardHeader>
-      
+
         <CardContent>
           {recentApplicationsQuery.isPending ? (
             <p className="text-muted-foreground">Loading applications...</p>
@@ -100,7 +131,7 @@ export default function DashboardPage() {
                       {application.companyName}
                     </p>
                   </div>
-      
+
                   <Badge variant="secondary">{application.status}</Badge>
                 </Link>
               ))}
