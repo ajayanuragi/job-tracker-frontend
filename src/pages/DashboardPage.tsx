@@ -10,6 +10,7 @@ import {
   CalendarCheck,
   Trophy,
 } from "lucide-react";
+import ApplicationStatusChart from "@/components/dashboard/ApplicationStatusChart";
 
 export default function DashboardPage() {
   const results = useQueries({
@@ -31,6 +32,16 @@ export default function DashboardPage() {
         queryKey: ["applications", { status: "OFFER", page: 0, size: 1 }],
         queryFn: () => getApplications({ status: "OFFER", page: 0, size: 1 }),
       },
+      {
+        queryKey: ["applications", { status: "REJECTED", page: 0, size: 1 }],
+        queryFn: () =>
+          getApplications({ status: "REJECTED", page: 0, size: 1 }),
+      },
+      {
+        queryKey: ["applications", { status: "WITHDRAW", page: 0, size: 1 }],
+        queryFn: () =>
+          getApplications({ status: "WITHDRAW", page: 0, size: 1 }),
+      },
     ],
   });
 
@@ -44,7 +55,15 @@ export default function DashboardPage() {
       }),
   });
 
-  const [jobsQuery, applicationsQuery, interviewsQuery, offersQuery] = results;
+  const [
+    jobsQuery,
+    applicationsQuery,
+    interviewsQuery,
+    offersQuery,
+    rejectedQuery,
+    withdrawnQuery,
+  ] = results;
+
   const stats = [
     {
       title: "Total Jobs",
@@ -72,6 +91,17 @@ export default function DashboardPage() {
     },
   ];
 
+  const chartQueries = [
+    applicationsQuery,
+    interviewsQuery,
+    offersQuery,
+    rejectedQuery,
+    withdrawnQuery,
+  ];
+
+  const chartLoading = chartQueries.some((query) => query.isPending);
+  const chartError = chartQueries.some((query) => query.isError);
+
   return (
     <div className="space-y-6 p-6">
       <div className="space-y-4">
@@ -84,12 +114,10 @@ export default function DashboardPage() {
             <Link key={title} to={href} className="block">
               <Card className="h-full transition-colors hover:bg-muted/50">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle className="text-sm font-medium">
-                    {title}
-                  </CardTitle>
+                  <CardTitle className="text-sm font-medium">{title}</CardTitle>
                   <Icon className="size-5 text-muted-foreground" />
                 </CardHeader>
-          
+
                 <CardContent>
                   <div className="text-3xl font-bold">
                     {query.isPending
@@ -103,6 +131,33 @@ export default function DashboardPage() {
             </Link>
           ))}
         </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Application Status Distribution</CardTitle>
+          </CardHeader>
+
+          <CardContent>
+            {chartLoading ? (
+              <p className="text-muted-foreground">Loading chart...</p>
+            ) : chartError ? (
+              <p className="text-destructive">Failed to load chart.</p>
+            ) : (
+              <ApplicationStatusChart
+                applied={
+                  applicationsQuery.data!.page.totalElements -
+                  interviewsQuery.data!.page.totalElements -
+                  offersQuery.data!.page.totalElements -
+                  rejectedQuery.data!.page.totalElements -
+                  withdrawnQuery.data!.page.totalElements
+                }
+                interview={interviewsQuery.data!.page.totalElements}
+                offer={offersQuery.data!.page.totalElements}
+                rejected={rejectedQuery.data!.page.totalElements}
+                withdrawn={withdrawnQuery.data!.page.totalElements}
+              />
+            )}
+          </CardContent>
+        </Card>
       </div>
 
       <Card>
