@@ -11,15 +11,15 @@ interface ApplicationCardProps {
 function ApplicationCard({ application }: ApplicationCardProps) {
   return (
     <Card>
-      <CardHeader>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <CardTitle>{application.jobTitle}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {application.companyName}
-            </p>
-          </div>
+      <CardHeader className="space-y-3">
+        <div className="space-y-1">
+          <CardTitle>{application.jobTitle}</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            {application.companyName}
+          </p>
+        </div>
 
+        <div>
           <ApplicationStatusSelect application={application} />
         </div>
       </CardHeader>
@@ -32,8 +32,9 @@ function ApplicationCard({ application }: ApplicationCardProps) {
         {application.notes && <p className="text-sm">{application.notes}</p>}
 
         <Button
+          nativeButton={false}
           variant="outline"
-          className="w-full mt-2"
+          className="w-full mt-4"
           render={<Link to={`/applications/${application.id}`} />}
         >
           View Details

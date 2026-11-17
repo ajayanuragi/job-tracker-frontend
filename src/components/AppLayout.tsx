@@ -6,21 +6,33 @@ export default function AppLayout() {
   return (
     <div className="min-h-svh">
       <header className="border-b">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
+        <nav className="mx-auto flex max-w-6xl items-center justify-between py-4 px-6">
           <NavLink to="/dashboard" className="font-semibold">
             JobTracker
           </NavLink>
 
           <div className="flex items-center gap-2">
-            <Button variant="ghost" render={<NavLink to="/dashboard" />}>
+            <Button
+              nativeButton={false}
+              variant="ghost"
+              render={<NavLink to="/dashboard" />}
+            >
               Dashboard
             </Button>
 
-            <Button variant="ghost" render={<NavLink to="/jobs" />}>
+            <Button
+              nativeButton={false}
+              variant="ghost"
+              render={<NavLink to="/jobs" />}
+            >
               Jobs
             </Button>
 
-            <Button variant="ghost" render={<NavLink to="/applications" />}>
+            <Button
+              nativeButton={false}
+              variant="ghost"
+              render={<NavLink to="/applications" />}
+            >
               Applications
             </Button>
           </div>
@@ -29,7 +41,7 @@ export default function AppLayout() {
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl p-6">
+      <main className="mx-auto max-w-6xl py-6">
         <Outlet />
       </main>
     </div>
