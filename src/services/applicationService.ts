@@ -3,7 +3,7 @@ import type {
   Application,
   ApplicationRequest,
   ApplicationPatchRequest,
-  ApplicationStatus
+  ApplicationStatus,
 } from "@/types/application";
 import type { Page } from "@/types/pagination";
 
@@ -26,40 +26,46 @@ export const getApplications = async (
 export const createApplication = async (
   data: ApplicationRequest,
 ): Promise<Application> => {
-  const response = await api.post('/api/applications', data)
-  return response.data
-}
+  const response = await api.post("/api/applications", data);
+  return response.data;
+};
 
-
-export const getApplication = async (
-  id: number,
-): Promise<Application> => {
-  const response = await api.get(`/api/applications/${id}`)
-  return response.data
-}
+export const getApplication = async (id: number): Promise<Application> => {
+  const response = await api.get(`/api/applications/${id}`);
+  return response.data;
+};
 
 export const patchApplication = async (
   id: number,
   data: ApplicationPatchRequest,
 ): Promise<Application> => {
-  const response = await api.patch(`/api/applications/${id}`, data)
-  return response.data
-}
+  const response = await api.patch(`/api/applications/${id}`, data);
+  return response.data;
+};
 export const applicationExists = async (jobId: number): Promise<boolean> => {
-  const response = await api.get<boolean>('/api/applications/exists', {
+  const response = await api.get<boolean>("/api/applications/exists", {
     params: { jobId },
-  })
+  });
 
-  return response.data
-}
+  return response.data;
+};
 
 export const updateApplicationStatus = async (
   id: number,
-  status: ApplicationStatus
+  status: ApplicationStatus,
 ): Promise<Application> => {
-  const response = await api.patch<Application>(
-    `/api/applications/${id}`,
-    { status }
-  );
+  const response = await api.patch<Application>(`/api/applications/${id}`, {
+    status,
+  });
+  return response.data;
+};
+
+export const getApplicationByJobId = async (
+  jobId: number,
+): Promise<Application> => {
+  const response = await api.get<Application>("/api/applications/by-job", {
+    params: { jobId },
+  });
+
   return response.data;
 };
