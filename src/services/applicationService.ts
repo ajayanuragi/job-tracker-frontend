@@ -42,13 +42,6 @@ export const patchApplication = async (
   const response = await api.patch(`/api/applications/${id}`, data);
   return response.data;
 };
-export const applicationExists = async (jobId: number): Promise<boolean> => {
-  const response = await api.get<boolean>("/api/applications/exists", {
-    params: { jobId },
-  });
-
-  return response.data;
-};
 
 export const updateApplicationStatus = async (
   id: number,
