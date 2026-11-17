@@ -1,75 +1,97 @@
-# React + TypeScript + Vite
+# JobTracker — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A job application tracking interface built with React and TypeScript, backed by a Spring Boot REST API.
 
-Currently, two official plugins are available:
+**[Live Demo](https://jobtracker-ajay.vercel.app)** · **[Backend Repository](https://github.com/ajayanuragi/job-tracker)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+JobTracker helps users save job listings, track applications, and see their progress on a dashboard.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Features
 
-## Expanding the ESLint configuration
+- **Authentication:** Register, log in, access protected routes, and return to login after an authenticated API request receives a `401` response.
+- **Job listings:** Browse, create, and view job details.
+- **Applications:** Create applications, view details, update statuses, and filter by status, company, or job title.
+- **Dashboard:** View totals for jobs, applications, interviews, and offers; browse recent applications; and explore an application-status donut chart.
+- **Navigation:** Open filtered application lists directly from dashboard statistics.
+- **UI states:** Loading placeholders, empty states, and error messages.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Screenshots
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Dashboard
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+![JobTracker dashboard with application statistics and status chart](public/screenshots/dashboard.png)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Jobs
 
+![JobTracker jobs page with saved job listings](public/screenshots/jobs.png)
+
+### Applications
+
+![JobTracker applications page with status and search filters](public/screenshots/applications.png)
+
+## Tech Stack
+
+| Area | Technologies |
+| --- | --- |
+| Framework | React, TypeScript, Vite |
+| Styling | Tailwind CSS, shadcn/ui |
+| Routing | React Router |
+| Data fetching | TanStack Query, Axios |
+| Forms | React Hook Form, Zod |
+| Charts and icons | Recharts, Lucide React |
+| Package manager | Bun |
+| Hosting | Vercel |
+
+## Local Development
+
+### Prerequisites
+
+- [Bun](https://bun.sh/)
+- A running [JobTracker backend](https://github.com/ajayanuragi/job-tracker) or its hosted API
+
+### Setup
+
+```bash
+git clone https://github.com/ajayanuragi/job-tracker-frontend.git
+cd job-tracker-frontend
+bun install
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+Create a `.env.local` file in the project root:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```env
+VITE_API_BASE_URL=http://localhost:8080
 ```
+
+To use the deployed backend instead:
+
+```env
+VITE_API_BASE_URL=https://job-tracker-v83k.onrender.com
+```
+
+Start the development server:
+
+```bash
+bun run dev
+```
+
+Open `http://localhost:5173`.
+
+## Checks
+
+```bash
+bun run build
+bun run lint
+```
+
+## Deployment
+
+The frontend is deployed on [Vercel](https://vercel.com/) at **https://jobtracker-ajay.vercel.app**. Set `VITE_API_BASE_URL` to the backend's public base URL in the Vercel project's environment variables, then build and deploy the Vite application.
+
+The Spring Boot backend is hosted on Render and uses PostgreSQL on Neon. The backend must allow the deployed frontend origin in its CORS configuration.
+
+## Backend
+
+See [job-tracker](https://github.com/ajayanuragi/job-tracker) for the API implementation, authentication, database configuration, and backend tests.
