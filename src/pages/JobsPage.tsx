@@ -1,10 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createJob, getJobs } from "@/services/jobService";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router";
+
 import {
   Dialog,
   DialogTrigger,
@@ -18,6 +17,7 @@ import type { JobFormValues } from "@/schemas/jobSchema";
 import { useState } from "react";
 import PageError from "@/components/common/PageError";
 import ListPageSkeleton from "@/components/common/ListPageSkeleton";
+import JobCard from "@/components/jobs/JobCard";
 
 function JobsPage() {
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
@@ -114,38 +114,7 @@ function JobsPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {data.content.map((job) => (
-            <Card key={job.id} className="flex flex-col">
-              <CardHeader>
-                <CardTitle>{job.title}</CardTitle>
-                <p className="text-sm text-muted-foreground">
-                  {job.companyName}
-                </p>
-              </CardHeader>
-
-              <CardContent className="flex flex-1 flex-col gap-4">
-                <p className="line-clamp-3 text-sm text-muted-foreground">
-                  {job.description}
-                </p>
-
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="secondary">
-                    {job.employmentType.replace("_", " ")}
-                  </Badge>
-                  <Badge variant="outline">{job.workplaceType}</Badge>
-                </div>
-
-                <p className="mt-auto text-sm text-muted-foreground">
-                  {job.location || "Location not specified"}
-                </p>
-                <Button
-                  variant="outline"
-                  className="w-full"
-                  render={<Link to={`/jobs/${job.id}`} />}
-                >
-                  View Details
-                </Button>
-              </CardContent>
-            </Card>
+            <JobCard key={job.id} job={job} />
           ))}
         </div>
       )}
