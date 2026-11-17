@@ -17,24 +17,51 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
-
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 import { getJobs } from "@/services/jobService";
 import ApplicationCard from "@/components/applications/ApplicationCard";
 import ApplicationForm from "@/components/applications/ApplicationForm";
 import type { ApplicationFormValues } from "@/schemas/applicationSchema";
 import { useState } from "react";
 import PageError from "@/components/common/PageError";
+import type { ApplicationStatus } from "@/types/application";
 
 function ApplicationsPage() {
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
+  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "ALL">(
+    "ALL",
+  );
+  const [companyFilter, setCompanyFilter] = useState("");
+  const [jobTitleFilter, setJobTitleFilter] = useState("");
+  const [companyInput, setCompanyInput] = useState("");
+  const [jobTitleInput, setJobTitleInput] = useState("");
 
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["applications"],
+    queryKey: [
+      "applications",
+      {
+        page: 0,
+        size: 10,
+        status: statusFilter,
+        companyName: companyFilter,
+        jobTitle: jobTitleFilter,
+      },
+    ],
     queryFn: () =>
       getApplications({
         page: 0,
         size: 10,
         sort: ["appliedAt,desc"],
+        status: statusFilter === "ALL" ? undefined : statusFilter,
+        companyName: companyFilter || undefined,
+        jobTitle: jobTitleFilter || undefined,
       }),
   });
 
@@ -96,6 +123,19 @@ function ApplicationsPage() {
     );
   }
 
+  const handleSearch = () => {
+    setCompanyFilter(companyInput.trim());
+    setJobTitleFilter(jobTitleInput.trim());
+  };
+
+  const handleClearFilters = () => {
+    setStatusFilter("ALL");
+    setCompanyInput("");
+    setCompanyFilter("");
+    setJobTitleInput("");
+    setJobTitleFilter("");
+  };
+
   return (
     <main className="space-y-6 p-6">
       <div>
@@ -103,6 +143,59 @@ function ApplicationsPage() {
         <p className="text-muted-foreground">
           Track and manage your job applications.
         </p>
+      </div>
+      <div className="flex flex-wrap gap-3">
+        <Select
+          value={statusFilter}
+          onValueChange={(value) =>
+            setStatusFilter(value as ApplicationStatus | "ALL")
+          }
+        >
+          <SelectTrigger className="w-48">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+
+          <SelectContent>
+            <SelectItem value="ALL">All Statuses</SelectItem>
+            <SelectItem value="APPLIED">Applied</SelectItem>
+            <SelectItem value="INTERVIEW">Interview</SelectItem>
+            <SelectItem value="OFFER">Offer</SelectItem>
+            <SelectItem value="REJECTED">Rejected</SelectItem>
+            <SelectItem value="WITHDRAW">Withdrawn</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Input
+          placeholder="Search by company..."
+          value={companyInput}
+          onChange={(e) => setCompanyInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setCompanyFilter(companyInput.trim());
+              setJobTitleFilter(jobTitleInput.trim());
+            }
+          }}
+          className="w-56"
+        />
+        <Input
+          placeholder="Search by job title..."
+          value={jobTitleInput}
+          onChange={(e) => setJobTitleInput(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              setCompanyFilter(companyInput.trim());
+              setJobTitleFilter(jobTitleInput.trim());
+            }
+          }}
+          className="w-56"
+        />
+
+        <Button type="button" onClick={handleSearch}>
+          Search
+        </Button>
+        <Button variant="outline" type="button" onClick={handleClearFilters}>
+          Clear Filters
+        </Button>
       </div>
 
       {jobsData && jobsData.content.length > 0 ? (
@@ -152,7 +245,11 @@ function ApplicationsPage() {
       )}
 
       {data.content.length === 0 ? (
-        <p className="text-muted-foreground">No applications yet.</p>
+        <p className="text-muted-foreground">
+          {statusFilter !== "ALL" || companyFilter || jobTitleFilter
+            ? "No applications match your filters."
+            : "No applications yet."}
+        </p>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {data.content.map((application) => (
