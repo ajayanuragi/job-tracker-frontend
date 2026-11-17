@@ -1,4 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useSearchParams } from "react-router";
 import {
   createApplication,
   getApplications,
@@ -34,14 +35,27 @@ import PageError from "@/components/common/PageError";
 import type { ApplicationStatus } from "@/types/application";
 
 function ApplicationsPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isAddApplicationOpen, setIsAddApplicationOpen] = useState(false);
-  const [statusFilter, setStatusFilter] = useState<ApplicationStatus | "ALL">(
-    "ALL",
-  );
   const [companyFilter, setCompanyFilter] = useState("");
   const [jobTitleFilter, setJobTitleFilter] = useState("");
   const [companyInput, setCompanyInput] = useState("");
   const [jobTitleInput, setJobTitleInput] = useState("");
+  const status = searchParams.get("status");
+
+  const validStatuses: ApplicationStatus[] = [
+    "APPLIED",
+    "INTERVIEW",
+    "REJECTED",
+    "OFFER",
+    "WITHDRAW",
+  ];
+
+  const statusFilter: ApplicationStatus | "ALL" = validStatuses.includes(
+    status as ApplicationStatus,
+  )
+    ? (status as ApplicationStatus)
+    : "ALL";
 
   const { data, isPending, isError, refetch } = useQuery({
     queryKey: [
@@ -129,7 +143,11 @@ function ApplicationsPage() {
   };
 
   const handleClearFilters = () => {
-    setStatusFilter("ALL");
+    setSearchParams((params) => {
+      const updated = new URLSearchParams(params);
+      updated.delete("status");
+      return updated;
+    });
     setCompanyInput("");
     setCompanyFilter("");
     setJobTitleInput("");
@@ -147,9 +165,17 @@ function ApplicationsPage() {
       <div className="flex flex-wrap gap-3">
         <Select
           value={statusFilter}
-          onValueChange={(value) =>
-            setStatusFilter(value as ApplicationStatus | "ALL")
-          }
+          onValueChange={(value) => {
+            const params = new URLSearchParams(searchParams);
+
+            if (!value || value === "ALL") {
+              params.delete("status");
+            } else {
+              params.set("status", value);
+            }
+
+            setSearchParams(params);
+          }}
         >
           <SelectTrigger className="w-48">
             <SelectValue placeholder="Filter by status" />
