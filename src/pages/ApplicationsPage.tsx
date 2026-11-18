@@ -42,6 +42,7 @@ function ApplicationsPage() {
   const [companyInput, setCompanyInput] = useState("");
   const [jobTitleInput, setJobTitleInput] = useState("");
   const status = searchParams.get("status");
+  const [page, setPage] = useState(0);
 
   const validStatuses: ApplicationStatus[] = [
     "APPLIED",
@@ -61,7 +62,7 @@ function ApplicationsPage() {
     queryKey: [
       "applications",
       {
-        page: 0,
+        page,
         size: 10,
         status: statusFilter,
         companyName: companyFilter,
@@ -70,7 +71,7 @@ function ApplicationsPage() {
     ],
     queryFn: () =>
       getApplications({
-        page: 0,
+        page,
         size: 10,
         sort: ["appliedAt,desc"],
         status: statusFilter === "ALL" ? undefined : statusFilter,
@@ -140,6 +141,7 @@ function ApplicationsPage() {
   const handleSearch = () => {
     setCompanyFilter(companyInput.trim());
     setJobTitleFilter(jobTitleInput.trim());
+    setPage(0);
   };
 
   const handleClearFilters = () => {
@@ -152,6 +154,7 @@ function ApplicationsPage() {
     setCompanyFilter("");
     setJobTitleInput("");
     setJobTitleFilter("");
+    setPage(0);
   };
 
   return (
@@ -173,7 +176,7 @@ function ApplicationsPage() {
             } else {
               params.set("status", value);
             }
-
+            setPage(0);
             setSearchParams(params);
           }}
         >
@@ -197,8 +200,7 @@ function ApplicationsPage() {
           onChange={(e) => setCompanyInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              setCompanyFilter(companyInput.trim());
-              setJobTitleFilter(jobTitleInput.trim());
+             handleSearch()
             }
           }}
           className="w-56"
@@ -209,8 +211,7 @@ function ApplicationsPage() {
           onChange={(e) => setJobTitleInput(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              setCompanyFilter(companyInput.trim());
-              setJobTitleFilter(jobTitleInput.trim());
+            handleSearch()
             }
           }}
           className="w-56"
@@ -281,6 +282,30 @@ function ApplicationsPage() {
           {data.content.map((application) => (
             <ApplicationCard key={application.id} application={application} />
           ))}
+        </div>
+      )}
+
+      {data.page.totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            disabled={page === 0}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Previous
+          </Button>
+
+          <span className="text-sm text-muted-foreground">
+            Page {page + 1} of {data.page.totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            disabled={page >= data.page.totalPages - 1}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </Button>
         </div>
       )}
     </main>

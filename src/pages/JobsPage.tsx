@@ -21,6 +21,7 @@ import JobCard from "@/components/jobs/JobCard";
 
 function JobsPage() {
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
+  const [page, setPage] = useState(0);
 
   const queryClient = useQueryClient();
 
@@ -36,8 +37,8 @@ function JobsPage() {
   });
 
   const { data, isPending, isError, refetch } = useQuery({
-    queryKey: ["jobs", 0, 10],
-    queryFn: () => getJobs({ page: 0, size: 10 }),
+    queryKey: ["jobs", page, 10],
+    queryFn: () => getJobs({ page, size: 10 }),
   });
 
   if (isPending) {
@@ -116,6 +117,30 @@ function JobsPage() {
           {data.content.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
+        </div>
+      )}
+
+      {data.page.totalPages > 1 && (
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            disabled={page === 0}
+            onClick={() => setPage((prev) => prev - 1)}
+          >
+            Previous
+          </Button>
+
+          <span className="text-sm text-muted-foreground">
+            Page {page + 1} of {data.page.totalPages}
+          </span>
+
+          <Button
+            variant="outline"
+            disabled={page >= data.page.totalPages - 1}
+            onClick={() => setPage((prev) => prev + 1)}
+          >
+            Next
+          </Button>
         </div>
       )}
     </main>
