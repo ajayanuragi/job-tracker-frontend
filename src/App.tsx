@@ -1,9 +1,10 @@
 import "./App.css";
 import { Navigate, Route, Routes } from "react-router";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import GuestRoute from "@/components/GuestRoute";
-import AppLayout from "@/components/AppLayout";
+import ProtectedRoute from "@/components/layout/ProtectedRoute";
+import GuestRoute from "@/components/layout/GuestRoute";
+import AppLayout from "@/components/layout/AppLayout";
 import { lazy, Suspense } from "react";
+
 import RouteLoadingSkeleton from "@/components/common/RouteLoadingSkeleton";
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
