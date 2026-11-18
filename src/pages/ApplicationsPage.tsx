@@ -159,14 +159,16 @@ function ApplicationsPage() {
   };
 
   return (
-    <main className="space-y-6 p-6">
+   <main className="space-y-6 px-3 py-4 md:p-6">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Applications</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl font-bold tracking-tight text-center md:text-left">
+          Applications
+        </h1>
+        <p className="text-muted-foreground text-center md:text-left">
           Track and manage your job applications.
         </p>
       </div>
-      <div className="flex flex-wrap gap-3">
+    <div className="flex flex-wrap justify-center gap-3 md:justify-start">
         <Select
           value={statusFilter}
           onValueChange={(value) => {
@@ -225,34 +227,35 @@ function ApplicationsPage() {
           Clear Filters
         </Button>
       </div>
+      <div className="flex justify-center md:justify-start">
+        {jobsData && jobsData.content.length > 0 ? (
+          <Dialog
+            open={isAddApplicationOpen}
+            onOpenChange={setIsAddApplicationOpen}
+          >
+            <DialogTrigger render={<Button>Add Application</Button>} />
 
-      {jobsData && jobsData.content.length > 0 ? (
-        <Dialog
-          open={isAddApplicationOpen}
-          onOpenChange={setIsAddApplicationOpen}
-        >
-          <DialogTrigger render={<Button>Add Application</Button>} />
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add a new application</DialogTitle>
+                <DialogDescription>
+                  Select a job and enter your application details.
+                </DialogDescription>
+              </DialogHeader>
 
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add a new application</DialogTitle>
-              <DialogDescription>
-                Select a job and enter your application details.
-              </DialogDescription>
-            </DialogHeader>
-
-            <ApplicationForm
-              jobs={jobsData.content}
-              onSubmit={handleCreateApplication}
-              isPending={createMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
-      ) : (
-        <p className="text-sm text-muted-foreground">
-          Add a job before tracking an application.
-        </p>
-      )}
+              <ApplicationForm
+                jobs={jobsData.content}
+                onSubmit={handleCreateApplication}
+                isPending={createMutation.isPending}
+              />
+            </DialogContent>
+          </Dialog>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Add a job before tracking an application.
+          </p>
+        )}
+      </div>
 
       {createMutation.isSuccess && (
         <Alert>
