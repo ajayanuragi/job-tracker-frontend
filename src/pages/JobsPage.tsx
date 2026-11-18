@@ -18,6 +18,7 @@ import { useState } from "react";
 import PageError from "@/components/common/PageError";
 import ListPageSkeleton from "@/components/common/ListPageSkeleton";
 import JobCard from "@/components/jobs/JobCard";
+import PaginationControls from "@/components/common/PaginationControls";
 
 function JobsPage() {
   const [isAddJobOpen, setIsAddJobOpen] = useState(false);
@@ -120,28 +121,12 @@ function JobsPage() {
         </div>
       )}
 
-      {data.page.totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            disabled={page === 0}
-            onClick={() => setPage((prev) => prev - 1)}
-          >
-            Previous
-          </Button>
-
-          <span className="text-sm text-muted-foreground">
-            Page {page + 1} of {data.page.totalPages}
-          </span>
-
-          <Button
-            variant="outline"
-            disabled={page >= data.page.totalPages - 1}
-            onClick={() => setPage((prev) => prev + 1)}
-          >
-            Next
-          </Button>
-        </div>
+      {data && (
+        <PaginationControls
+          page={page}
+          totalPages={data.page.totalPages}
+          onPageChange={setPage}
+        />
       )}
     </main>
   );
