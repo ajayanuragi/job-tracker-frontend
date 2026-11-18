@@ -88,7 +88,11 @@ function JobDetails() {
   if (isError || !job) {
     return (
       <main className="space-y-4 p-6">
-        <Button variant="outline" render={<Link to="/jobs" />}>
+        <Button
+          nativeButton={false}
+          variant="outline"
+          render={<Link to="/jobs" />}
+        >
           Back to Jobs
         </Button>
 
@@ -104,7 +108,11 @@ function JobDetails() {
   return (
     <main className="space-y-6 p-6">
       <div className="flex items-center justify-between">
-        <Button variant="outline" render={<Link to="/jobs" />}>
+        <Button
+          variant="outline"
+          nativeButton={false}
+          render={<Link to="/jobs" />}
+        >
           Back to Jobs
         </Button>
 
@@ -117,6 +125,7 @@ function JobDetails() {
         ) : trackedApplication ? (
           <Button
             variant="outline"
+            nativeButton={false}
             render={<Link to={`/applications/${trackedApplication.id}`} />}
           >
             View Application
@@ -175,6 +184,7 @@ function JobDetails() {
           {job.jobUrl && (
             <Button
               variant="outline"
+              nativeButton={false}
               render={
                 <a
                   href={job.jobUrl}
