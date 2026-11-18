@@ -31,7 +31,7 @@ html::-webkit-scrollbar {
 
     font: 18px/145% var(--sans);
     letter-spacing: 0.18px;
-    color-scheme: light dark;
+    /*color-scheme: light dark;*/
     color: var(--text);
     background: var(--bg);
     font-synthesis: none;
@@ -104,7 +104,7 @@ html::-webkit-scrollbar {
     --sidebar-ring: oklch(0.708 0 0);
 }
 
-@media (prefers-color-scheme: dark) {
+/*@media (prefers-color-scheme: dark) {
     :root {
         --text: #9ca3af;
         --text-h: #f3f4f6;
@@ -123,7 +123,7 @@ html::-webkit-scrollbar {
     #social .button-icon {
         filter: invert(1) brightness(2);
     }
-}
+}*/
 
 #root {
     min-height: 100svh;
@@ -138,7 +138,7 @@ h1,
 h2 {
     font-family: var(--heading);
     font-weight: 500;
-    color: var(--text-h);
+    color: var(--foreground);
 }
 
 h1 {
@@ -264,5 +264,14 @@ code {
     }
     html {
         @apply font-sans;
+    }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    body,
+    body * {
+        transition-property: background-color, border-color, color;
+        transition-duration: 200ms;
+        transition-timing-function: ease-in-out;
     }
 }
