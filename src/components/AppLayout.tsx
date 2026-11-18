@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router";
 import LogoutButton from "@/components/LogoutButton";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default function AppLayout() {
   return (
@@ -37,7 +38,10 @@ export default function AppLayout() {
             </Button>
           </div>
 
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <LogoutButton />
+          </div>
         </nav>
       </header>
 
