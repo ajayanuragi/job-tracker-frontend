@@ -4,7 +4,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import GuestRoute from "@/components/GuestRoute";
 import AppLayout from "@/components/AppLayout";
 import { lazy, Suspense } from "react";
-
+import RouteLoadingSkeleton from "@/components/common/RouteLoadingSkeleton";
 const LoginPage = lazy(() => import("@/pages/LoginPage"));
 const RegisterPage = lazy(() => import("@/pages/RegisterPage"));
 const DashboardPage = lazy(() => import("@/pages/DashboardPage"));
@@ -17,7 +17,7 @@ const ApplicationDetailsPage = lazy(
 
 function App() {
   return (
-    <Suspense>
+    <Suspense fallback={<RouteLoadingSkeleton />}>
       <Routes>
         <Route path="/" element={<Navigate to="/login" replace />} />
         <Route element={<GuestRoute />}>
