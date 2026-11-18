@@ -38,7 +38,13 @@ export default function MobileNavigation() {
               key={item.to}
               to={item.to}
               onClick={() => setOpen(false)}
-              className="rounded-md px-3 py-2 text-sm hover:bg-accent"
+              className={({ isActive }) =>
+                `rounded-md px-3 py-2 text-sm transition-colors ${
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "hover:bg-accent"
+                }`
+              }
             >
               {item.label}
             </NavLink>

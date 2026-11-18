@@ -1,10 +1,11 @@
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useLocation } from "react-router";
 import LogoutButton from "@/components/layout/LogoutButton";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import MobileNavigation from "@/components/layout/MobileNavigation";
 
 export default function AppLayout() {
+  const { pathname } = useLocation();
   return (
     <div className="min-h-svh">
       <header className="border-b">
@@ -19,7 +20,7 @@ export default function AppLayout() {
           <div className="hidden  items-center gap-2 md:flex">
             <Button
               nativeButton={false}
-              variant="ghost"
+             variant={pathname === "/dashboard" ? "default" : "ghost"}
               render={<NavLink to="/dashboard" />}
             >
               Dashboard
@@ -27,7 +28,7 @@ export default function AppLayout() {
 
             <Button
               nativeButton={false}
-              variant="ghost"
+             variant={pathname.startsWith("/jobs") ? "default" : "ghost"}
               render={<NavLink to="/jobs" />}
             >
               Jobs
@@ -35,7 +36,7 @@ export default function AppLayout() {
 
             <Button
               nativeButton={false}
-              variant="ghost"
+            variant={pathname.startsWith("/applications") ? "default" : "ghost"}
               render={<NavLink to="/applications" />}
             >
               Applications
