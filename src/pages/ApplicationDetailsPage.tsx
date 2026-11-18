@@ -60,7 +60,7 @@ function ApplicationDetailsPage() {
   if (isError || !application) {
     return (
       <main className="space-y-4 p-6">
-        <Button variant="outline" render={<Link to="/applications" />}>
+        <Button nativeButton={false} variant="outline" render={<Link to="/applications" />}>
           Back to Applications
         </Button>
 
@@ -76,7 +76,7 @@ function ApplicationDetailsPage() {
   return (
     <main className="w-full space-y-6 p-6">
       <div className="flex items-center justify-between gap-4">
-        <Button variant="outline" render={<Link to="/applications" />}>
+        <Button variant="outline" nativeButton={false} render={<Link to="/applications" />}>
           Back to Applications
         </Button>
 
