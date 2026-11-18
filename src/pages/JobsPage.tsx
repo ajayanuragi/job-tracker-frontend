@@ -77,31 +77,34 @@ function JobsPage() {
   }
 
   return (
-    <main className="space-y-6 p-6">
+   <main className="space-y-6 px-3 py-4 md:p-6">
       <div className="space-y-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Jobs</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-2xl font-bold tracking-tight text-center md:text-left">
+            Jobs
+          </h1>
+          <p className="text-muted-foreground text-center md:text-left">
             Manage and organize your saved job listings.
           </p>
         </div>
+        <div className="flex justify-center md:justify-start">
+          <Dialog open={isAddJobOpen} onOpenChange={setIsAddJobOpen}>
+            <DialogTrigger render={<Button>Add Job</Button>} />
+            <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
+              <DialogHeader>
+                <DialogTitle>Add a new job</DialogTitle>
+                <DialogDescription>
+                  Enter the details of the job you want to track.
+                </DialogDescription>
+              </DialogHeader>
 
-        <Dialog open={isAddJobOpen} onOpenChange={setIsAddJobOpen}>
-          <DialogTrigger render={<Button>Add Job</Button>} />
-          <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-2xl">
-            <DialogHeader>
-              <DialogTitle>Add a new job</DialogTitle>
-              <DialogDescription>
-                Enter the details of the job you want to track.
-              </DialogDescription>
-            </DialogHeader>
-
-            <JobForm
-              onSubmit={(data) => createJobMutation.mutate(data)}
-              isPending={createJobMutation.isPending}
-            />
-          </DialogContent>
-        </Dialog>
+              <JobForm
+                onSubmit={(data) => createJobMutation.mutate(data)}
+                isPending={createJobMutation.isPending}
+              />
+            </DialogContent>
+          </Dialog>
+        </div>
       </div>
 
       {data.content.length === 0 ? (

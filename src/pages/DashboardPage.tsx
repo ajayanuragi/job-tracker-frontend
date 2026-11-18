@@ -105,7 +105,9 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 p-6">
       <div className="space-y-4">
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+        <h1 className="text-3xl font-bold tracking-tight text-center md:text-left">
+          Dashboard
+        </h1>
         <p className="text-muted-foreground">
           Overview of your jobs and applications.
         </p>
