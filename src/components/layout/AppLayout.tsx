@@ -1,7 +1,8 @@
 import { NavLink, Outlet } from "react-router";
-import LogoutButton from "@/components/LogoutButton";
+import LogoutButton from "@/components/layout/LogoutButton";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme/ThemeToggle";
+import MobileNavigation from "@/components/layout/MobileNavigation";
 
 export default function AppLayout() {
   return (
@@ -11,8 +12,11 @@ export default function AppLayout() {
           <NavLink to="/dashboard" className="font-semibold">
             JobTracker
           </NavLink>
+          <div className="md:hidden">
+            <MobileNavigation />
+          </div>
 
-          <div className="flex items-center gap-2">
+          <div className="hidden  items-center gap-2 md:flex">
             <Button
               nativeButton={false}
               variant="ghost"
